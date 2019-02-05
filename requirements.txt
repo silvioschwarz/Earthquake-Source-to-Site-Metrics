@@ -1,10 +1,11 @@
 certifi==2018.11.29
 chardet==3.0.4
 Click==7.0
-dash==0.35.3
-dash-core-components==0.42.1
-dash-html-components==0.13.5
+dash==0.29.0
+dash-core-components==0.38.0
+dash-html-components==0.13.2
 dash-renderer==0.16.2
+dash-table==3.1.5
 decorator==4.3.2
 Flask==1.0.2
 Flask-Compress==1.4.0
@@ -19,7 +20,7 @@ MarkupSafe==1.1.0
 nbformat==4.4.0
 numpy==1.16.0
 pandas==0.23.4
-plotly==3.5.0
+plotly==3.0.0
 python-dateutil==2.7.5
 pytz==2018.9
 requests==2.21.0

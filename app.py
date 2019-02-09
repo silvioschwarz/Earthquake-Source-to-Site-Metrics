@@ -1,6 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
@@ -89,150 +90,109 @@ def EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW):
     return (repi,rhyp,rjb,rrup,rell,rz)
 
 
-
 app.layout = html.Div([
     ############################
     #CONTROLS
+	html.Div([
                 html.Div([
-
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-                    dcc.Input(id='EQLAT', value='5.0', type="number"),
+			html.Div([
+			html.Label('EQLAT'),
+                    dcc.Input(id='EQLAT', value='5.0', type="number",),
+			html.Label('EQLON Input'),
                     dcc.Input(id='EQLON', value='5.0', type="number"),
-                    dcc.Input(id='EQDEPTH', value='15.0', type="number"),
+			html.Label('EQDEPTH Input'),
+                    dcc.Input(id='EQDEPTH', value='10.0', type="number")
+				],style={'width': '25%', 'display': 'inline-block'}),
+			html.Div([
+			html.Label('SiteLAT Input'),
                     dcc.Input(id='EVENTLAT', value='5.0', type="number"),
-                    dcc.Input(id='EVENTLON', value='5.0', type="number"),
-                    ],
-                style={'width': '48%', 'display': 'inline-block'}),
-
-                html.Div([
-
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-                    dcc.Dropdown(
-                        id='distance',
-                        options=[{'label': i, 'value': i} for i in [
-                            "Epicentral Distance Repi",
-                            "Hypocentral Distance Rhypo",
-                            "Joyner-Boore Distance Rjb",
-                            "Rupture Distance Rrup",
-			    "Ellipse Distance Rell",
-                            "Schwarz/Mean Fault Distance Rz"
-                            ]],
-                        value="Epicentral Distance Repi"
-                        )
-                      ],
-                    style={
-                        'width': '48%',
-                        'display': 'inline-block'
-                        }
-                ),
-
-
-                html.Div([
-
-    html.Div(children='''
-        Width
-    '''),
-                   dcc.Slider(
+			html.Label('SiteLON Input'),
+                    dcc.Input(id='EVENTLON', value='5.0', type="number")
+				],style={'width': '25%', 'display': 'inline-block'}),
+			html.Div([
+			html.Label('Width'),
+		     dcc.Slider(
                        id='Width',
                        min=0,
-                       max=10,
+                       max=100,
                        value=5.0,
                        step=1,
-                       ),
-                   html.Div(children='''
-        Delta W
-    '''),
-                    dcc.Slider(
+			marks={'0': '0', '50':'50','100': '100'}
+                       ),html.Br(),
+			html.Label('DeltaW'),
+		      dcc.Slider(
                         id='DeltaW',
                         min=0,
                         max=10,
                         value=0,
                         step=1,
-                        ),
-                    html.Div(children='''
-        Length
-    '''),
-                    dcc.Slider(
+			marks={'0': '0', '10': '10'}
+                        ),html.Br(),
+			html.Label('Length'),
+		    dcc.Slider(
                         id='Length',
                         min=0,
-                        max=10,
-                        value=2.0,
+                        max=100,
+                        value=20.0,
                         step=1,
-                        ),
-                    html.Div(children='''
-        Delta L
-    '''),
-                    dcc.Slider(
+			marks={'0': '0',  '50':'50','100': '100'}
+                        ),html.Br(),
+			html.Label('DeltaL'),
+		     dcc.Slider(
                         id='DeltaL',
                         min=0,
                         max=10,
                         value=0,
                         step=1,
-                        ),
-                    html.Div(children='''
-        Strike
-    '''),
+			marks={'0': '0', '10': '10'}
+                        ),html.Br(),
+			html.Label('Strike'),
                     dcc.Slider(
                         id='Strike',
-                        min=30,
+                        min=0,
                         max=360,
-                        value=2.0,
+                        value=10.0,
                         step=1,
-                        ),
-                    html.Div(children='''
-        Dip
-    '''),
+			marks={'0': '0', '90': '90', '180': '180', '270': '270'}
+                        ),html.Br(),
+			html.Label('Dip'),
                     dcc.Slider(
                         id='Dip',
                         min=0,
                         max=90,
-                        value=30,
+                        value=45,
                         step=1,
+			marks={'0': '0','30': '30', '60': '60', '90': '90'}
+                        )
+			],style={'width': '49%', 'display': 'inline-block'}),
+                    ],
+                style={'width': '98%', 'display': 'inline-block'}),
+		html.Br(),
+		html.Br(),
+                #VALUES
+                html.Div(id='distance-text'),
+
+		html.Div([
+                    dcc.Graph(
+			#figure=figure,
+			 id='distance-simulation'
                         )],
-                    style={
-                       'width': '48%',
-                       'display': 'inline-block'
-                       }
-
-                ),
-                html.Div([],
-                    style={
-                       'width': '48%',
-                       'display': 'inline-block'
-                       }
-
-                ),
-
+                    style={'display': 'inline-block', 'width': '99%'}
+                )
+		],
+                    style={'display': 'inline-block', 'width': '49%'}),
 
                 #####################################
                 #Graphics
 
                 html.Div([
                     dcc.Graph(
-                        id='distance-simulation',
-
+			 id='contour-of-distance'
                 )],
                 style={
                     'display': 'inline-block',
-                    'width': '49%'}
-                ),
-
-
-
-
-                html.Div([
-                    dcc.Graph(
-                        id='contour-of-distance'
-                        )],
-                    style={'display': 'inline-block', 'width': '49%'}
-                ),
-                #VALUES
-                html.Div(id='distance-text'),
-
+                    'width': '29%'}
+                )
 
 ])
 
@@ -240,7 +200,7 @@ app.layout = html.Div([
 @app.callback(
     dash.dependencies.Output('contour-of-distance', 'figure'),
     [
-    dash.dependencies.Input('distance','value'),
+#    dash.dependencies.Input('distance','value'),
     dash.dependencies.Input('EVENTLAT','value'),
     dash.dependencies.Input('EVENTLON','value'),
     dash.dependencies.Input('EQDEPTH','value'),
@@ -252,7 +212,7 @@ app.layout = html.Div([
     dash.dependencies.Input('Dip','value')
     ])
 
-def update_graph(distance,EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip):
+def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip):
 
     EQDEPTH= float(EQDEPTH)
     EVENTLAT= float(EVENTLAT)
@@ -266,55 +226,183 @@ def update_graph(distance,EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,S
 
     # DISTANCE CALCULATIONS
 
-    X = np.arange(-5,5, 0.1)
-    Y = np.arange(-5,5, 0.1)
+    X = np.arange(-50,50, 0.1)
+    Y = np.arange(-50,50, 0.1)
 
     points = [(x, y,z) for x in X for y in Y for z in range(1)]
 
     #metrics = np.empty([x.size(), y.size(),5])
     metrics = EQDistances(np.array(points), EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
 
-    distances = {
-        "Epicentral Distance Repi": metrics[0],
-        "Hypocentral Distance Rhypo": metrics[1],
-        "Joyner-Boore Distance Rjb":metrics[2],
-        "Rupture Distance Rrup":metrics[3],
-	"Ellipse Distance Rell":metrics[4],
-        "Schwarz/Mean Fault Distance Rz":metrics[5]
-        }
+#    distances = {
+#        "Epicentral Distance Repi": metrics[0],
+#        "Hypocentral Distance Rhypo": metrics[1],
+#        "Joyner-Boore Distance Rjb":metrics[2],
+#        "Rupture Distance Rrup":metrics[3],
+#	"Ellipse Distance Rell":metrics[4],
+#        "Schwarz/Mean Fault Distance Rz":metrics[5]
+#        }
 
-    return {
-        'data': [
-            go.Contour(
-                x = X,
+    contoursDict = dict(start=0,
+	  	        end=70,
+		    	size=5,
+			coloring ='heatmap',
+            		showlabels = True,
+            		labelfont = dict(
+               			family = 'Raleway',
+                		size = 12,
+                		color = 'white')
+			)
+    colorBarDict=dict(
+            	title='Distance [km]',
+            	titleside='top',
+		xpad=20,
+            	titlefont=dict(
+                	size=14,
+                	family='Arial, sans-serif'
+            	)
+        	)
+
+    autoContour=False
+
+    trace0 = go.Contour(
+		x = X,
                 y = Y,
-                z=distances[distance].reshape(len(X),len(Y)),
-                colorscale='Jet'
-                )
-            ],
-            'layout':
-                go.Layout(
-                    xaxis={
-                       'type': 'linear',
-                        'title': 'x [km]'
-                        },
-                    yaxis={
-                        'title': 'y [km]'},
-                    margin={
-                        'l': 40,
-                        'b': 30,
-                        't': 10,
-                        'r': 0
-                        },
-                    height=400,
-                    width=500,
-                    legend={
-                        'x': 0,
-                        'y': 1
-                        },
-                    hovermode='closest'
-                )
-            }
+                z=metrics[0].reshape(len(X),len(Y)),
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		colorbar = colorBarDict
+		)
+    trace1 = go.Contour(
+		x = X,
+                y = Y,
+                z=metrics[1].reshape(len(X),len(Y)),
+		xaxis='x1',
+  		yaxis='y1',
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		showscale=False
+		)
+    trace2 = go.Contour(
+		x = X,
+                y = Y,
+                z=metrics[2].reshape(len(X),len(Y)),
+		xaxis='x2',
+  		yaxis='y2',
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		showscale=False
+		)
+    trace3 = go.Contour(
+		x = X,
+                y = Y,
+                z=metrics[3].reshape(len(X),len(Y)),
+		xaxis='x3',
+  		yaxis='y3',
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		showscale=False
+		)
+    trace4 = go.Contour(
+		x = X,
+                y = Y,
+                z=metrics[4].reshape(len(X),len(Y)),
+		xaxis='x4',
+  		yaxis='y4',
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		showscale=False
+		)
+    trace5 = go.Contour(
+		x = X,
+                y = Y,
+                z=metrics[5].reshape(len(X),len(Y)),
+		xaxis='x5',
+  		yaxis='y5',
+                colorscale='Jet',reversescale=True,
+		autocontour=autoContour,
+	        contours=contoursDict,
+		showscale=False
+		)
+
+#	data = [trace0,trace1,trace2,trace3,trace4,trace5]
+#
+#	layout = go.Layout(
+#			xaxis={
+#	                       'type': 'linear',
+#	                       'title': 'x [km]'
+ #                       },
+  #        	        yaxis={
+   #             	        'title': 'y [km]'
+	#		},
+    	#	)
+
+
+    fig = plotly.tools.make_subplots(
+		rows=3, 
+		cols=2, 
+		subplot_titles=(
+			"Epicentral Distance Repi",
+        		"Hypocentral Distance Rhypo",
+			"Joyner-Boore Distance Rjb",
+		        "Rupture Distance Rrup",
+			"Ellipse Distance Rell",
+		        "Schwarz Distance Rz"
+			)
+		)
+
+    fig.append_trace(trace0, 1, 1)
+    fig.append_trace(trace1, 1, 2)
+    fig.append_trace(trace2, 2, 1)
+    fig.append_trace(trace3, 2, 2)
+    fig.append_trace(trace4, 3, 1)
+    fig.append_trace(trace5, 3, 2)
+	
+    fig['layout'].update(height=900, 
+			 width=600, 
+			 title='Comparison of spatial Distance Distribution',
+			 autosize=False,
+			 scene=dict(aspectmode="data")
+			)
+
+    return fig
+#    return {
+#        'data': [
+#            go.Contour(
+#                x = X,
+#                y = Y,
+#                z=distances[distance].reshape(len(X),len(Y)),
+#                colorscale='Jet'
+#                )
+#            ],
+ #           'layout':
+ #               go.Layout(
+  #                  xaxis={
+   #                    'type': 'linear',
+    #                    'title': 'x [km]'
+     #                   },
+      #              yaxis={
+       #                 'title': 'y [km]'},
+        #            margin={
+         #               'l': 40,
+          #              'b': 30,
+           #             't': 10,
+            #            'r': 0
+             #           },
+              #      height=400,
+               #     width=500,
+                #    legend={
+                 #       'x': 0,
+                  #      'y': 1
+                   #     },
+                    #hovermode='closest'
+                #)
+            #}
 
 
 
@@ -353,8 +441,8 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
     Strike= np.deg2rad(float(Strike))
     Dip= np.deg2rad(float(Dip))
 
-    XEvent= GeoDistance(EQLAT,EVENTLON,EQLAT,EQLON,"K")
-    YEvent= GeoDistance(EVENTLAT,EQLON,EQLAT,EQLON,"K")
+    XEvent= EVENTLAT#GeoDistance(EQLAT,EVENTLON,EQLAT,EQLON,"K")
+    YEvent= EVENTLON#GeoDistance(EVENTLAT,EQLON,EQLAT,EQLON,"K")
 
     #azimuthX = np.arccos(XEvent/repi)
     #azimuthY = np.arccos(YEvent/repi)
@@ -378,10 +466,12 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                            [sinDip,0,cosDip]]
                           )
 
-    planeTransformed = plane.T.dot(rotationStrike).dot(rotationDip).T - np.array([[0, 0, 0, 0],
-		   [0, 0, 0, 0],
-		   [EQDEPTH, EQDEPTH, EQDEPTH, EQDEPTH]]
-			)
+    planeTransformedStrike = plane.T.dot(rotationStrike).T
+    planeTransformedDip = plane.T.dot(rotationDip).T		
+
+    planeTransformed = planeTransformedDip.T.dot(rotationStrike).T - np.array([[0, 0, 0, 0], [0, 0, 0, 0], [EQDEPTH, EQDEPTH, EQDEPTH, EQDEPTH]])
+
+    markerSize = 12
 
     return {
         'data': [
@@ -392,10 +482,11 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                 z=[0],
                 mode='markers',
                 marker=dict(
-                    size=4,
+                    size=markerSize,
                     opacity=0.9
                     ),
-                showlegend=False
+		name="station",
+                showlegend=True
                             ),
             go.Scatter3d(
                 #EPICENTRE
@@ -404,10 +495,11 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                 z=[0],
                 mode='markers',
                 marker=dict(
-                    size=4,
+                    size=markerSize,
                     opacity=0.9
                     ),
-                showlegend=False
+		name="epicentre",
+                showlegend=True
                 ),
             go.Scatter3d(
                 #HYPOCENTRE
@@ -416,19 +508,20 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                 z=[-EQDEPTH],
                 mode='markers',
                 marker=dict(
-                    size=4,
+                    size=markerSize,
                     opacity=0.
                      ),
-                showlegend=False
+		name="hypocentre",
+                showlegend=True
                 ),
             go.Scatter3d(
             #surfacepolygonpoints
-               	x=plane[0,:],
-		y=plane[1,:],
-		z=plane[2,:],
+               	x=planeTransformedStrike[0,:],
+		y=planeTransformedStrike[1,:],
+		z=planeTransformedStrike[2,:],
                 mode='markers',
                 marker=dict(
-                    size=4,
+                    size=1,
                     opacity=0.9
                 ),
                 showlegend=False
@@ -440,7 +533,7 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
 		z=planeTransformed[2,:],
                 mode='markers',
                 marker=dict(
-                    size=4,
+                    size=1,
                     opacity=0.9
                     ),
                 showlegend=False
@@ -448,9 +541,9 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
 
             #PLANES
             go.Mesh3d(
-                	x=plane[0,:],
-		y=plane[1,:],
-		z=plane[2,:]
+                x=planeTransformedStrike[0,:],
+		y=planeTransformedStrike[1,:],
+		z=planeTransformedStrike[2,:]
             ),
             go.Mesh3d(
                 x=planeTransformed[0,:],
@@ -468,11 +561,11 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                 },
                 'xaxis':{
                     'title': 'x [km]',
-                    'range': [-10, 10]
+                    'range': [-100, 100]
                     },
                 'yaxis':{
                     'title': 'y [km]',
-                    'range': [-10, 10],
+                    'range': [-100, 100],
                     },
                 'zaxis':{
                     'title': 'z [km]',
@@ -486,8 +579,8 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                         't': 10,
                         'r': 0
                         },
-                height=400,
-                width=500,
+                height=600,
+                width=600,
                 hovermode='closest'
         )
     }
@@ -531,12 +624,12 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
     distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
 
     return (
-            'Repi: "{}"km\n'.format(distances[0])+ '\n' +
-           ' Rhyp: "{}"km\n'.format(distances[1])+
-           ' Rjb: "{}"km\n'.format(distances[2])+
-           ' Rrup: "{}"km\n'.format(distances[3])+
-		   ' Rell: "{}"km\n'.format(distances[4])+
-           ' Rz: "{}"km'.format(distances[5])
+            'Repi: {} km\n'.format(float(distances[0]))+
+           ' Rhyp: {}km\n'.format(float(distances[1]))+
+           ' Rjb: {}km\n'.format(float(distances[2]))+
+           ' Rrup: {}km\n'.format(float(distances[3]))+
+	   ' Rell: {}km\n'.format(float(distances[4]))+
+           ' Rz: {}km'.format(float(distances[5]))
            )
 
 

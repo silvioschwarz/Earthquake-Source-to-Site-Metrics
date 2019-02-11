@@ -191,7 +191,7 @@ app.layout = html.Div([
                 )],
                 style={
                     'display': 'inline-block',
-                    'width': '29%'}
+                    'width': '39%'}
                 )
 
 ])
@@ -226,8 +226,8 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
 
     # DISTANCE CALCULATIONS
 
-    X = np.arange(-50,50, 0.1)
-    Y = np.arange(-50,50, 0.1)
+    X = np.arange(-50,50, 1)
+    Y = np.arange(-50,50, 1)
 
     points = [(x, y,z) for x in X for y in Y for z in range(1)]
 
@@ -269,7 +269,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
 		x = X,
                 y = Y,
                 z=metrics[0].reshape(len(X),len(Y)),
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		colorbar = colorBarDict
@@ -280,7 +280,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 z=metrics[1].reshape(len(X),len(Y)),
 		xaxis='x1',
   		yaxis='y1',
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		showscale=False
@@ -291,7 +291,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 z=metrics[2].reshape(len(X),len(Y)),
 		xaxis='x2',
   		yaxis='y2',
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		showscale=False
@@ -302,7 +302,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 z=metrics[3].reshape(len(X),len(Y)),
 		xaxis='x3',
   		yaxis='y3',
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		showscale=False
@@ -313,7 +313,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 z=metrics[4].reshape(len(X),len(Y)),
 		xaxis='x4',
   		yaxis='y4',
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		showscale=False
@@ -324,7 +324,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 z=metrics[5].reshape(len(X),len(Y)),
 		xaxis='x5',
   		yaxis='y5',
-                colorscale='Jet',reversescale=True,
+                colorscale='Jet',#reversescale=True,
 		autocontour=autoContour,
 	        contours=contoursDict,
 		showscale=False
@@ -346,6 +346,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     fig = plotly.tools.make_subplots(
 		rows=3, 
 		cols=2, 
+               # vertical_spacing = 0.09,
 		subplot_titles=(
 			"Epicentral Distance Repi",
         		"Hypocentral Distance Rhypo",
@@ -576,11 +577,11 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                 margin={
                         'l': 40,
                         'b': 30,
-                        't': 10,
+                        't': 0,
                         'r': 0
                         },
-                height=600,
-                width=600,
+                height=500,
+                width=800,
                 hovermode='closest'
         )
     }

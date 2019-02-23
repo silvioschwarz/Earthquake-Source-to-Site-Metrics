@@ -1,0 +1,14 @@
+[2019-02-22 14:39:44 +0100] [32599] [INFO] Starting gunicorn 19.9.0
+[2019-02-22 14:39:44 +0100] [32599] [INFO] Listening at: http://0.0.0.0:6000 (32599)
+[2019-02-22 14:39:44 +0100] [32599] [INFO] Using worker: sync
+[2019-02-22 14:39:44 +0100] [32602] [INFO] Booting worker with pid: 32602
+[2019-02-22 14:40:19 +0100] [32599] [INFO] Handling signal: int
+[2019-02-22 14:40:19 +0100] [32602] [INFO] Worker exiting (pid: 32602)
+[2019-02-22 14:40:19 +0100] [32599] [INFO] Shutting down: Master
+[2019-02-22 14:44:51 +0100] [442] [INFO] Starting gunicorn 19.9.0
+[2019-02-22 14:44:51 +0100] [442] [INFO] Listening at: http://0.0.0.0:6000 (442)
+[2019-02-22 14:44:51 +0100] [442] [INFO] Using worker: sync
+[2019-02-22 14:44:51 +0100] [445] [INFO] Booting worker with pid: 445
+[2019-02-22 14:45:39 +0100] [442] [INFO] Handling signal: int
+[2019-02-22 14:45:39 +0100] [445] [INFO] Worker exiting (pid: 445)
+[2019-02-22 14:45:40 +0100] [442] [INFO] Shutting down: Master

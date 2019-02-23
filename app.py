@@ -9,17 +9,31 @@ from flask import Flask
 import os
 from scipy.spatial.distance import cdist
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
+                "https://fonts.googleapis.com/css?family=Raleway:400,400i,700,700i",
+                "https://fonts.googleapis.com/css?family=Product+Sans:400,400i,700,700i"]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(
+    name='earthquake-distances-app',
+#    sharing=True,
+#    url_base_pathname='/earthquake-distances',
+    external_stylesheets=external_css
+)
+
+app.config.update({
+    # as the proxy server will remove the prefix
+    'routes_pathname_prefix': '/earhtquake-distances/',
+
+    # the front-end will prefix this string to the requests
+    # that are made to the proxy server
+    'requests_pathname_prefix': '/earthquake-distances/'
+})
+
 
 server = app.server
 
-
-#server = Flask(__name__)
-#server.secret_key = os.environ.get('secret_key', 'secret')
-#app = dash.Dash(name = __name__, server = server)
-#app.config.supress_callback_exceptions = True
+#app.css.config.serve_locally = True
+#app.scripts.config.serve_locally = True
 
 def GeoDistance(lat1, lon1, lat2, lon2, unit):
     radlat1 = np.pi * lat1/180
@@ -640,3 +654,4 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+#    app.run_server(debug=True, host='127.0.0.1', port=6000)

@@ -20,6 +20,8 @@ app = dash.Dash(
     external_stylesheets=external_css
 )
 
+app.title="Source-to-Site earthquake distances"
+
 #app.config.update({
     # as the proxy server will remove the prefix
   #  'routes_pathname_prefix': '/earhtquake-distances/',
@@ -105,96 +107,161 @@ def EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW):
 
 
 app.layout = html.Div([
+		html.H1(children='Source-to-Site earthquake distances'),
     ############################
     #CONTROLS
 	html.Div([
                 html.Div([
 			html.Div([
-			html.Label('EQLAT'),
-                    dcc.Input(id='EQLAT', value='5.0', type="number",),
-			html.Label('EQLON Input'),
-                    dcc.Input(id='EQLON', value='5.0', type="number"),
-			html.Label('EQDEPTH Input'),
-                    dcc.Input(id='EQDEPTH', value='10.0', type="number")
-				],style={'width': '25%', 'display': 'inline-block'}),
+				html.Label('EQLAT'),
+	                        dcc.Input(
+					id='EQLAT',
+					placeholder='Source Latitude', 
+			     		value='5.0',
+        		      		type="number"
+					),
+				html.Label('EQLON Input'),
+                    		dcc.Input(
+					id='EQLON',
+					placeholder='Source Longitude', 
+					value='5.0', 
+					type="number"
+					),
+				html.Label('EQDEPTH Input'),
+                    		dcc.Input(
+					id='EQDEPTH', 
+					placeholder='Source Depth',
+					value='10.0', 
+					type="number"
+					)
+				],
+				style={'width': '25%', 
+					'display': 'inline-block'}
+			),
 			html.Div([
-			html.Label('SiteLAT Input'),
-                    dcc.Input(id='EVENTLAT', value='5.0', type="number"),
-			html.Label('SiteLON Input'),
-                    dcc.Input(id='EVENTLON', value='5.0', type="number")
-				],style={'width': '25%', 'display': 'inline-block'}),
+				html.Label('SiteLAT Input'),
+	 	                dcc.Input(
+					id='EVENTLAT',
+					placeholder='Site Latitude',
+					value='5.0', 
+					type="number"
+					),
+				html.Label('SiteLON Input'),
+         		        dcc.Input(
+					id='EVENTLON',
+					placeholder='Site Longitude',
+					value='5.0', 
+					type="number"
+					)
+				],
+				style={'width': '25%', 
+					'display': 'inline-block'}
+			),
 			html.Div([
 			html.Label('Width'),
-		     dcc.Slider(
-                       id='Width',
-                       min=0,
-                       max=100,
-                       value=5.0,
-                       step=1,
-			marks={'0': '0', '50':'50','100': '100'}
-                       ),html.Br(),
+		     	dcc.Slider(
+                       		id='Width',
+                       		min=0,
+                       		max=100,
+                       		value=5.0,
+                       		step=1,
+				marks={
+					'0': '0', 
+					'50':'50',
+					'100': '100'
+					}
+	                       ),
+			html.Br(),
 			html.Label('DeltaW'),
-		      dcc.Slider(
-                        id='DeltaW',
-                        min=0,
-                        max=10,
-                        value=0,
-                        step=1,
-			marks={'0': '0', '10': '10'}
-                        ),html.Br(),
+			dcc.Slider(
+        	                id='DeltaW',
+        	                min=0,
+        	                max=10,
+        	                value=0,
+        	                step=1,
+				marks={
+					'0': '0',
+					'10': '10'
+					}
+	                        ),
+			html.Br(),
 			html.Label('Length'),
-		    dcc.Slider(
-                        id='Length',
-                        min=0,
-                        max=100,
-                        value=20.0,
-                        step=1,
-			marks={'0': '0',  '50':'50','100': '100'}
-                        ),html.Br(),
+			dcc.Slider(
+	                        id='Length',
+	                        min=0,
+	                        max=100,
+	                        value=20.0,
+	                        step=1,
+				marks={
+					'0': '0',  
+					'50':'50',
+					'100': '100'
+					}
+	                        ),
+			html.Br(),
 			html.Label('DeltaL'),
-		     dcc.Slider(
-                        id='DeltaL',
-                        min=0,
-                        max=10,
-                        value=0,
-                        step=1,
-			marks={'0': '0', '10': '10'}
-                        ),html.Br(),
+		     	dcc.Slider(
+                        	id='DeltaL',
+                        	min=0,
+                        	max=10,
+                        	value=0,
+                        	step=1,
+				marks={'0': '0', '10': '10'}
+                        ),
+			html.Br(),
 			html.Label('Strike'),
-                    dcc.Slider(
-                        id='Strike',
-                        min=0,
-                        max=360,
-                        value=10.0,
-                        step=1,
-			marks={'0': '0', '90': '90', '180': '180', '270': '270'}
-                        ),html.Br(),
+	                dcc.Slider(
+        	                id='Strike',
+        	                min=0,
+        	                max=360,
+        	                value=10.0,
+        	                step=1,
+				marks={'0': '0', '90': '90', '180': '180', '270': '270'}
+                        ),
+			html.Br(),
 			html.Label('Dip'),
-                    dcc.Slider(
-                        id='Dip',
-                        min=0,
-                        max=90,
-                        value=45,
-                        step=1,
-			marks={'0': '0','30': '30', '60': '60', '90': '90'}
-                        )
-			],style={'width': '49%', 'display': 'inline-block'}),
+	                dcc.Slider(
+        	                id='Dip',
+        	                min=0,
+        	                max=90,
+        	                value=45,
+        	                step=1,
+				marks={'0': '0','30': '30', '60': '60', '90': '90'}
+        	                )
+			],
+			style={
+				'width': '49%', 
+				'display': 'inline-block'
+				}
+			),
                     ],
-                style={'width': '98%', 'display': 'inline-block'}),
+                style={
+			'width': '98%', 
+			'display': 'inline-block'
+			}
+		),
 		html.Br(),
 		html.Br(),
                 #VALUES
                 html.Div(id='distance-text'),
 
 		html.Div([
-                    dcc.Graph(
-			#figure=figure,
-			 id='distance-simulation'
-                        )],
-                    style={'display': 'inline-block', 'width': '99%'}
-                )
+			dcc.Graph(
+				#figure=figure,
+				 id='distance-simulation'
+        	                )
+			],
+        		style={
+				'display': 'inline-block', 
+				'width': '99%'
+				}
+	                )
 		],
-                    style={'display': 'inline-block', 'width': '49%'}),
+                    style={
+			'display': 'inline-block', 
+			'width': '49%'
+			}
+		),
 
                 #####################################
                 #Graphics
@@ -205,7 +272,8 @@ app.layout = html.Div([
                 )],
                 style={
                     'display': 'inline-block',
-                    'width': '39%'}
+                    'width': '39%'
+			}
                 )
 
 ])
@@ -267,6 +335,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
                 		size = 12,
                 		color = 'white')
 			)
+
     colorBarDict=dict(
             	title='Distance [km]',
             	titleside='top',
@@ -274,7 +343,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
             	titlefont=dict(
                 	size=14,
                 	family='Arial, sans-serif'
-            	)
+	            	)
         	)
 
     autoContour=False
@@ -378,11 +447,14 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     fig.append_trace(trace4, 3, 1)
     fig.append_trace(trace5, 3, 2)
 	
-    fig['layout'].update(height=900, 
-			 width=600, 
-			 title='Comparison of spatial Distance Distribution',
-			 autosize=False,
-			 scene=dict(aspectmode="data")
+    fig['layout'].update(
+			height=900, 
+			width=600, 
+			title='Comparison of spatial Distance Distribution',
+			autosize=False,
+			scene=dict(
+				aspectmode="data"
+				)
 			)
 
     return fig
@@ -462,29 +534,45 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
     #azimuthX = np.arccos(XEvent/repi)
     #azimuthY = np.arccos(YEvent/repi)
 
-    plane=np.array([[Width, -Width, -Width, Width],
-		   [Length, Length, -Length, -Length],
-		   [0, 0, 0, 0]]
-			)/2
+    plane=np.array(
+			[
+				[Width, -Width, -Width, Width],
+				[Length, Length, -Length, -Length],
+			   	[0,	0,	 0, 	0]
+			]
+		)/2
 
 
     cosDip, cosStrike, sinDip, sinStrike = np.cos(Dip), np.cos(Strike), np.sin(Dip), np.sin(Strike)
 
-    rotationStrike = np.array([[cosStrike, -sinStrike, 0],
-                               [sinStrike, cosStrike, 0],
-                               [0,0,1]]
+    rotationStrike = np.array(
+				[
+					[cosStrike, -sinStrike, 0],
+					[sinStrike, cosStrike, 0],
+					[0,	0,	1]]
                              )
 
 
-    rotationDip = np.array([[cosDip, 0, -sinDip],
-                           [0, 1, 0],
-                           [sinDip,0,cosDip]]
+    rotationDip = np.array(
+				[
+					[cosDip, 0, -sinDip],
+                           		[0,	 1, 	0],
+                           		[sinDip,0,cosDip]
+				]
                           )
 
     planeTransformedStrike = plane.T.dot(rotationStrike).T
     planeTransformedDip = plane.T.dot(rotationDip).T		
 
-    planeTransformed = planeTransformedDip.T.dot(rotationStrike).T - np.array([[0, 0, 0, 0], [0, 0, 0, 0], [EQDEPTH, EQDEPTH, EQDEPTH, EQDEPTH]])
+    depthArray = np.array(
+				[
+				[0, 		0,	 0, 	0], 
+				[0,		0,	 0, 	0], 
+				[EQDEPTH, EQDEPTH, EQDEPTH, EQDEPTH]
+				]
+			)
+
+    planeTransformed = planeTransformedDip.T.dot(rotationStrike).T - depthArray
 
     markerSize = 12
 
@@ -639,12 +727,12 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
     distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
 
     return (
-            'Repi: {%6.2f} km\n'.format(float(distances[0]))+
-           ' Rhyp: {%6.2f} km\n'.format(float(distances[1]))+
-           ' Rjb: {%6.2f} km\n'.format(float(distances[2]))+
-           ' Rrup: {%6.2f} km\n'.format(float(distances[3]))+
-	   ' Rell: {%6.2f} km\n'.format(float(distances[4]))+
-           ' Rz: {%6.2f} km'.format(float(distances[5]))
+            'Repi: {:.3f} km\n'.format(float(distances[0]))+
+           ' Rhyp: {:.3f} km\n'.format(float(distances[1]))+
+           ' Rjb: {:.3f} km\n'.format(float(distances[2]))+
+           ' Rrup: {:.3f} km\n'.format(float(distances[3]))+
+	   ' Rell: {:.3f} km\n'.format(float(distances[4]))+
+           ' Rz: {:.3f} km'.format(float(distances[5]))
            )
 
 

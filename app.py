@@ -639,12 +639,12 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
     distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
 
     return (
-            'Repi: {} km\n'.format(float(distances[0]))+
-           ' Rhyp: {}km\n'.format(float(distances[1]))+
-           ' Rjb: {}km\n'.format(float(distances[2]))+
-           ' Rrup: {}km\n'.format(float(distances[3]))+
-	   ' Rell: {}km\n'.format(float(distances[4]))+
-           ' Rz: {}km'.format(float(distances[5]))
+            'Repi: {%6.2f} km\n'.format(float(distances[0]))+
+           ' Rhyp: {%6.2f} km\n'.format(float(distances[1]))+
+           ' Rjb: {%6.2f} km\n'.format(float(distances[2]))+
+           ' Rrup: {%6.2f} km\n'.format(float(distances[3]))+
+	   ' Rell: {%6.2f} km\n'.format(float(distances[4]))+
+           ' Rz: {%6.2f} km'.format(float(distances[5]))
            )
 
 

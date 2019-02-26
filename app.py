@@ -20,14 +20,14 @@ app = dash.Dash(
     external_stylesheets=external_css
 )
 
-app.config.update({
+#app.config.update({
     # as the proxy server will remove the prefix
-    'routes_pathname_prefix': '/earhtquake-distances/',
+  #  'routes_pathname_prefix': '/earhtquake-distances/',
 
     # the front-end will prefix this string to the requests
     # that are made to the proxy server
-    'requests_pathname_prefix': '/earthquake-distances/'
-})
+ #   'requests_pathname_prefix': '/earthquake-distances/'
+#})
 
 
 server = app.server

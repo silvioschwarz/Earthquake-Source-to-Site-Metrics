@@ -1,15 +1,24 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output, State
+import dash_table
 import plotly
 import plotly.graph_objs as go
+
 import pandas as pd
 import numpy as np
 from flask import Flask
+
 import os
+import base64
+import datetime
+import io
+
 from scipy.spatial.distance import cdist
 
-external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
+external_css = ["css/style.css",
+		"https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
                 "https://fonts.googleapis.com/css?family=Raleway:400,400i,700,700i",
                 "https://fonts.googleapis.com/css?family=Product+Sans:400,400i,700,700i"]
 
@@ -20,7 +29,7 @@ app = dash.Dash(
     external_stylesheets=external_css
 )
 
-app.title="Source-to-Site earthquake distances"
+app.title="Source-to-Site earthquake distance metrics"
 
 #app.config.update({
     # as the proxy server will remove the prefix
@@ -106,11 +115,51 @@ def EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW):
     return (repi,rhyp,rjb,rrup,rell,rz)
 
 
+
+def parse_contents(contents, filename, date):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(
+                io.StringIO(decoded.decode('utf-8')))
+        elif 'xls' in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+    except Exception as e:
+        print(e)
+        return html.Div([
+            'There was an error processing this file.'
+        ])
+
+    return html.Div([
+        html.H5(filename),
+        html.H6(datetime.datetime.fromtimestamp(date)),
+
+        dash_table.DataTable(
+            data=df.to_dict('rows'),
+            columns=[{'name': i, 'id': i} for i in df.columns]
+        ),
+
+        html.Hr(),  # horizontal line
+
+        # For debugging, display the raw contents provided by the web browser
+        html.Div('Raw Content'),
+        html.Pre(contents[0:200] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        })
+    ])
+
+
+
+
 app.layout = html.Div([
-		html.H1(children='Source-to-Site earthquake distances'),
     ############################
     #CONTROLS
-	html.Div([
+	html.Div([html.H1(children='Source-to-Site earthquake distances'),
                 html.Div([
 			html.Div([
 				html.Label('EQLAT'),
@@ -135,9 +184,9 @@ app.layout = html.Div([
 					type="number"
 					)
 				],
-				style={'width': '25%', 
+				style={'width': '20%', 
 					'display': 'inline-block'}
-			),
+				),
 			html.Div([
 				html.Label('SiteLAT Input'),
 	 	                dcc.Input(
@@ -154,86 +203,137 @@ app.layout = html.Div([
 					type="number"
 					)
 				],
-				style={'width': '25%', 
+				style={'width': '20%', 
 					'display': 'inline-block'}
-			),
+				),
 			html.Div([
-			html.Label('Width'),
-		     	dcc.Slider(
-                       		id='Width',
-                       		min=0,
-                       		max=100,
-                       		value=5.0,
-                       		step=1,
-				marks={
-					'0': '0', 
-					'50':'50',
-					'100': '100'
+				html.Label('Width'),
+		     		dcc.Slider(
+                       			id='Width',
+                       			min=0,
+                       			max=100,
+                       			value=5.0,
+                      	 		step=1,
+					marks={
+						'0': '0', 
+						'50':'50',
+						'100': '100'
+						}
+	                	       ),
+#				html.Br(),
+#				html.Label('DeltaW'),
+#				dcc.Slider(
+ #       	        	        id='DeltaW',
+  #      	        	        min=0,
+   #     	        	        max=10,
+    #    	        	        value=0,
+     #   	        	        step=1,
+	#				marks={
+	#					'0': '0',
+	#					'10': '10'
+	#					}
+	 #               	        ),
+				html.Br(),
+				html.Label('Length'),
+				dcc.Slider(
+	                	        id='Length',
+	                	        min=0,
+	                	        max=100,
+	                	        value=20.0,
+	                	        step=1,
+					marks={
+						'0': '0',  
+						'50':'50',
+						'100': '100'
+						}
+	                	        ),
+	#			html.Br(),
+	#			html.Label('DeltaL'),
+	#	     		dcc.Slider(
+         #               		id='DeltaL',
+          #              		min=0,
+           #             		max=10,
+            #            		value=0,
+             #           		step=1,
+		#			marks={
+		#				'0': '0', 
+		#				'10': '10'
+		#				}
+                 #       		)
+				html.Br(),
+				html.Label('Strike'),
+	               		dcc.Slider(
+        	        	        id='Strike',
+        	        	        min=0,
+        	        	        max=360,
+        	        	        value=10.0,
+        	        	        step=1,
+					marks={
+						'0': '0', 
+						'90': '90', 
+						'180': '180', 
+						'270': '270',
+						'360':'360'
+						}
+                        	),
+				html.Br(),
+				html.Label('Dip'),
+	                	dcc.Slider(
+        	        	        id='Dip',
+        	        	        min=0,
+        	        	        max=90,
+        	        	        value=45,
+        	        	        step=1,
+					marks={
+						'0': '0',
+						'30': '30', 
+						'60': '60', 
+						'90': '90'
+						}
+        	        	        )
+				],
+				style={ 'height': '30%',
+					'width': '49%', 
+					'display': 'inline-block'
 					}
-	                       ),
-			html.Br(),
-			html.Label('DeltaW'),
-			dcc.Slider(
-        	                id='DeltaW',
-        	                min=0,
-        	                max=10,
-        	                value=0,
-        	                step=1,
-				marks={
-					'0': '0',
-					'10': '10'
-					}
-	                        ),
-			html.Br(),
-			html.Label('Length'),
-			dcc.Slider(
-	                        id='Length',
-	                        min=0,
-	                        max=100,
-	                        value=20.0,
-	                        step=1,
-				marks={
-					'0': '0',  
-					'50':'50',
-					'100': '100'
-					}
-	                        ),
-			html.Br(),
-			html.Label('DeltaL'),
-		     	dcc.Slider(
-                        	id='DeltaL',
-                        	min=0,
-                        	max=10,
-                        	value=0,
-                        	step=1,
-				marks={'0': '0', '10': '10'}
-                        ),
-			html.Br(),
-			html.Label('Strike'),
-	                dcc.Slider(
-        	                id='Strike',
-        	                min=0,
-        	                max=360,
-        	                value=10.0,
-        	                step=1,
-				marks={'0': '0', '90': '90', '180': '180', '270': '270'}
-                        ),
-			html.Br(),
-			html.Label('Dip'),
-	                dcc.Slider(
-        	                id='Dip',
-        	                min=0,
-        	                max=90,
-        	                value=45,
-        	                step=1,
-				marks={'0': '0','30': '30', '60': '60', '90': '90'}
-        	                )
-			],
-			style={
-				'width': '49%', 
-				'display': 'inline-block'
-				}
-			),
+				)#,
+#			html.Div([
+#				html.Br(),
+#				html.Label('Strike'),
+#	               		dcc.Slider(
+ #       	        	        id='Strike',
+  #      	        	        min=0,
+   #     	        	        max=360,
+    #    	        	        value=10.0,
+     #   	        	        step=1,
+	#				marks={
+	#					'0': '0', 
+	#					'90': '90', 
+	#					'180': '180', 
+	#					'270': '270',
+	#					'360':'360'
+	#					}
+         #               	),
+	#			html.Br(),
+	#			html.Label('Dip'),
+	 #               	dcc.Slider(
+        #	        	        id='Dip',
+        #	        	        min=0,
+        #	        	        max=90,
+        #	        	        value=45,
+        #	        	        step=1,
+	#				marks={
+	#					'0': '0',
+	#					'30': '30', 
+	#					'60': '60', 
+	#					'90': '90'
+	#					}
+        #	        	        )
+	#			],
+	#			style={'width': '49%', 
+	#				'display': 'inline-block'
+	#				}
+	#		)
                     ],
                 style={
 			'width': '98%', 
@@ -253,7 +353,7 @@ app.layout = html.Div([
 			],
         		style={
 				'display': 'inline-block', 
-				'width': '99%'
+				'width': '19%'
 				}
 	                )
 		],
@@ -262,21 +362,48 @@ app.layout = html.Div([
 			'width': '49%'
 			}
 		),
-
                 #####################################
                 #Graphics
-
                 html.Div([
                     dcc.Graph(
 			 id='contour-of-distance'
-                )],
-                style={
+                	)
+			],
+                style={'float':'right',
                     'display': 'inline-block',
-                    'width': '39%'
+                    'width': '49%'
 			}
-                )
+                ),
+		html.Br(),
+		html.Div([
+			dcc.Upload(
+        			id='upload-data',
+       				 children=html.Div([
+       					     'Drag and Drop or ',
+       					     html.A('Select Files')
+      						  ]),
+      				style={
+            				'width': '100%',
+            				'height': '60px',
+            				'lineHeight': '60px',
+           				'borderWidth': '1px',
+            				'borderStyle': 'dashed',
+           				'borderRadius': '5px',
+            				'textAlign': 'center',
+            				'margin': '10px'
+        				},
+       			# Allow multiple files to be uploaded
+        			multiple=True
+    				),
+    			html.Div(id='output-data-upload'),
+			],
+ 			style={
+                    		'display': 'inline-block',
+                    		'width': '99%'
+			}
+		)
+	])
 
-])
 
 
 @app.callback(
@@ -287,22 +414,23 @@ app.layout = html.Div([
     dash.dependencies.Input('EVENTLON','value'),
     dash.dependencies.Input('EQDEPTH','value'),
     dash.dependencies.Input('Width','value'),
-    dash.dependencies.Input('DeltaW','value'),
+ #   dash.dependencies.Input('DeltaW','value'),
     dash.dependencies.Input('Length','value'),
-    dash.dependencies.Input('DeltaL','value'),
+#    dash.dependencies.Input('DeltaL','value'),
     dash.dependencies.Input('Strike','value'),
     dash.dependencies.Input('Dip','value')
     ])
 
-def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip):
+#def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip):
+def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,Length,Strike,Dip):
 
     EQDEPTH= float(EQDEPTH)
     EVENTLAT= float(EVENTLAT)
     EVENTLON= float(EVENTLON)
     Width= float(Width)
     Length= float(Length)
-    DeltaW= float(DeltaW)
-    DeltaL= float(DeltaL)
+ #   DeltaW= float(DeltaW)
+  #  DeltaL= float(DeltaL)
     Strike= float(Strike)
     Dip= float(Dip)
 
@@ -314,7 +442,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     points = [(x, y,z) for x in X for y in Y for z in range(1)]
 
     #metrics = np.empty([x.size(), y.size(),5])
-    metrics = EQDistances(np.array(points), EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
+    metrics = EQDistances(np.array(points), EQDEPTH,Strike,Dip,Length,Width,0,0)
 
 #    distances = {
 #        "Epicentral Distance Repi": metrics[0],
@@ -339,7 +467,8 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     colorBarDict=dict(
             	title='Distance [km]',
             	titleside='top',
-		xpad=20,
+		x=1.2,
+		#xpad=100,
             	titlefont=dict(
                 	size=14,
                 	family='Arial, sans-serif'
@@ -429,7 +558,8 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     fig = plotly.tools.make_subplots(
 		rows=3, 
 		cols=2, 
-               # vertical_spacing = 0.09,
+                horizontal_spacing = 0.1,
+                vertical_spacing = 0.1,
 		subplot_titles=(
 			"Epicentral Distance Repi",
         		"Hypocentral Distance Rhypo",
@@ -448,8 +578,8 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
     fig.append_trace(trace5, 3, 2)
 	
     fig['layout'].update(
-			height=900, 
-			width=600, 
+			height=800, 
+			width=700, 
 			title='Comparison of spatial Distance Distribution',
 			autosize=False,
 			scene=dict(
@@ -503,9 +633,9 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
         dash.dependencies.Input('EVENTLAT','value'),
         dash.dependencies.Input('EVENTLON','value'),
         dash.dependencies.Input('Width','value'),
-        dash.dependencies.Input('DeltaW','value'),
+#        dash.dependencies.Input('DeltaW','value'),
         dash.dependencies.Input('Length','value'),
-        dash.dependencies.Input('DeltaL','value'),
+#        dash.dependencies.Input('DeltaL','value'),
         dash.dependencies.Input('Strike','value'),
         dash.dependencies.Input('Dip','value')
     ]
@@ -514,8 +644,8 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,DeltaW,Length,DeltaL,Strike,Dip
 
 
 
-def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL,Strike,Dip):
-
+#def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL,Strike,Dip):
+def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,Dip):
     EQLAT = float(EQLAT)
     EQLON= float(EQLON)
     EQDEPTH= float(EQDEPTH)
@@ -523,8 +653,8 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
     EVENTLON= float(EVENTLON)
     Width= float(Width)
     Length= float(Length)
-    DeltaW= float(DeltaW)
-    DeltaL= float(DeltaL)
+  #  DeltaW= float(DeltaW)
+   # DeltaL= float(DeltaL)
     Strike= np.deg2rad(float(Strike))
     Dip= np.deg2rad(float(Dip))
 
@@ -682,7 +812,7 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
                         't': 0,
                         'r': 0
                         },
-                height=500,
+                height=450,
                 width=800,
                 hovermode='closest'
         )
@@ -697,16 +827,16 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,
         dash.dependencies.Input('EVENTLAT','value'),
         dash.dependencies.Input('EVENTLON','value'),
         dash.dependencies.Input('Width','value'),
-        dash.dependencies.Input('DeltaW','value'),
+       # dash.dependencies.Input('DeltaW','value'),
         dash.dependencies.Input('Length','value'),
-        dash.dependencies.Input('DeltaL','value'),
+      #  dash.dependencies.Input('DeltaL','value'),
         dash.dependencies.Input('Strike','value'),
         dash.dependencies.Input('Dip','value')
     ]
 )
 
-def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL,Strike,Dip):
-
+#def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL,Strike,Dip):
+def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,Dip):
     EQLAT = float(EQLAT)
     EQLON= float(EQLON)
     EQDEPTH= float(EQDEPTH)
@@ -714,8 +844,8 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
     EVENTLON= float(EVENTLON)
     Width= float(Width)
     Length= float(Length)
-    DeltaW= float(DeltaW)
-    DeltaL= float(DeltaL)
+  #  DeltaW= float(DeltaW)
+   # DeltaL= float(DeltaL)
     Strike= float(Strike)
     Dip= float(Dip)
 
@@ -724,7 +854,7 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
 
     points = np.array([[XEvent, YEvent, 0]])
 
-    distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,DeltaL,DeltaW)
+    distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,0,0)
 
     return (
             'Repi: {:.3f} km\n'.format(float(distances[0]))+
@@ -736,7 +866,16 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,DeltaW,Length,DeltaL
            )
 
 
-
+@app.callback(Output('output-data-upload', 'children'),
+              [Input('upload-data', 'contents')],
+              [State('upload-data', 'filename'),
+               State('upload-data', 'last_modified')])
+def update_output(list_of_contents, list_of_names, list_of_dates):
+    if list_of_contents is not None:
+        children = [
+            parse_contents(c, n, d) for c, n, d in
+            zip(list_of_contents, list_of_names, list_of_dates)]
+        return children
 
 
 

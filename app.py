@@ -167,21 +167,21 @@ app.layout = html.Div([
 					id='EQLAT',
 					placeholder='Source Latitude', 
 			     		value='5.0',
-        		      		type="number"
+        		      		type="text"
 					),
 				html.Label('EQLON Input'),
                     		dcc.Input(
 					id='EQLON',
 					placeholder='Source Longitude', 
 					value='5.0', 
-					type="number"
+					type="text"
 					),
 				html.Label('EQDEPTH Input'),
                     		dcc.Input(
 					id='EQDEPTH', 
 					placeholder='Source Depth',
 					value='10.0', 
-					type="number"
+					type="text"
 					)
 				],
 				style={'width': '20%', 
@@ -193,14 +193,14 @@ app.layout = html.Div([
 					id='EVENTLAT',
 					placeholder='Site Latitude',
 					value='5.0', 
-					type="number"
+					type="text"
 					),
 				html.Label('SiteLON Input'),
          		        dcc.Input(
 					id='EVENTLON',
 					placeholder='Site Longitude',
 					value='5.0', 
-					type="number"
+					type="text"
 					)
 				],
 				style={'width': '20%', 
@@ -658,8 +658,8 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,
     Strike= np.deg2rad(float(Strike))
     Dip= np.deg2rad(float(Dip))
 
-    XEvent= EVENTLAT#GeoDistance(EQLAT,EVENTLON,EQLAT,EQLON,"K")
-    YEvent= EVENTLON#GeoDistance(EVENTLAT,EQLON,EQLAT,EQLON,"K")
+    XEvent= GeoDistance(EQLAT,EVENTLON,EQLAT,EQLON,"K")
+    YEvent= GeoDistance(EVENTLAT,EQLON,EQLAT,EQLON,"K")
 
     #azimuthX = np.arccos(XEvent/repi)
     #azimuthY = np.arccos(YEvent/repi)

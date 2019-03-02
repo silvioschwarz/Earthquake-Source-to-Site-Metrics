@@ -1,5 +1,5 @@
-# Earthquake Distances
+# Earthquake-Source-to-Site-Metrics
 ![eqd](/img/DistComparison.png)
 
 
-This is an extension to my Bacelor Thesis.
+This is an extension to my Bachelor Thesis.

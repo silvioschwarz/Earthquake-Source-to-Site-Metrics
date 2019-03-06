@@ -704,6 +704,17 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,
 
     planeTransformed = planeTransformedDip.T.dot(rotationStrike).T - depthArray
 
+	name = 'eye = (x:0.1, y:0.1, z:1)'
+camera = dict(
+    up=dict(x=0, y=0, z=1),
+    center=dict(x=0, y=0, z=0),
+    eye=dict(x=0.1, y=0.1, z=1)
+)
+
+#	fig['layout'].update(
+#    scene=dict(camera=camera),
+#    title=name
+#)
     markerSize = 12
 
     return {
@@ -803,7 +814,12 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,
                 'zaxis':{
                     'title': 'z [km]',
                     'range': [-20, 10],
-                    }
+                    },
+		'camera':{
+		    'up':{'x':0, 'y':0, 'z':1},
+		    'center':{'x':0, 'y':0, 'z':0},
+		    'eye':{'x':0.1, 'y':0.1, 'z':1}
+			}
                 },
 
                 margin={
@@ -817,6 +833,10 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,
                 hovermode='closest'
         )
     }
+
+
+
+
 
 @app.callback(
     dash.dependencies.Output('distance-text', 'children'),

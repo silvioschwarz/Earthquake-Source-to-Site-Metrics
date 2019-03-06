@@ -1,3 +1,0 @@
-#! /bin/sh
-
-sudo -H pip install dash==0.36.0 dash-html-components==0.13.5 dash-core-components==0.43.0 dash-table==3.1.11 dash-daq==0.1.0  

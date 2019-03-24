@@ -703,13 +703,25 @@ def update_simulation(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,
 			)
 
     planeTransformed = planeTransformedDip.T.dot(rotationStrike).T - depthArray
-
-	name = 'eye = (x:0.1, y:0.1, z:1)'
-camera = dict(
-    up=dict(x=0, y=0, z=1),
-    center=dict(x=0, y=0, z=0),
-    eye=dict(x=0.1, y=0.1, z=1)
-)
+    
+    name = 'eye = (x:0.1, y:0.1, z:1)'
+    camera = dict(
+        up=dict(
+	    x=0, 
+	    y=0, 
+	    z=1
+	),
+        center=dict(
+	    x=0, 
+	    y=0, 
+	    z=0
+	),
+        eye=dict(
+	    x=0.1, 
+	    y=0.1, 
+	    z=1
+	)
+    )
 
 #	fig['layout'].update(
 #    scene=dict(camera=camera),

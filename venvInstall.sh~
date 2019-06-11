@@ -4,7 +4,7 @@ sudo apt-get update
 sudo apt-get upgrade
 
 echo "install virtual environment and dependencies"
-sudo apt-get install python3-venv virtualenv
+sudo apt-get install python3-venv
 
 #sudo python3.5 -m venv venv
 sudo virtualenv venv

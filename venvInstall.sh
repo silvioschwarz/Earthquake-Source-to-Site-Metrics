@@ -11,6 +11,7 @@ sudo virtualenv venv
 source venv/bin/activate
 
 pip3 install --user -r requirements.txt
+#python -m pip install dash Flask gunicorn pandas plotly scipy numpy
 
 deactivate
 

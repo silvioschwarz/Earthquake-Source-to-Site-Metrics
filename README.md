@@ -3,5 +3,6 @@
 
 
 This is an extension to my Bachelor Thesis.
+[https://earthquake-distances.herokuapp.com](https://earthquake-distances-a1d6ea1e3d61.herokuapp.com/)
 
-<a href="[https://earthquake-distances.herokuapp.com](https://earthquake-distances-a1d6ea1e3d61.herokuapp.com/)">Until it works use this link to heroku!</a>
+<a href="https://earthquake-distances.herokuapp.com">Until it works use this link to heroku!</a>

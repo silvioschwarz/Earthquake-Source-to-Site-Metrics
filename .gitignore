@@ -1,5 +1,4 @@
-venv
-*.pyc
-.DS_Store
-.env
-
+test/
+docs/
+eqs2s-dist/
+python_install.sh

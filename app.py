@@ -1,9 +1,10 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output, State
-import dash_table
+from dash import dash_table
 import plotly
+import plotly.subplots
 import plotly.graph_objs as go
 
 import pandas as pd
@@ -555,7 +556,7 @@ def update_graph(EVENTLAT,EVENTLON,EQDEPTH,Width,Length,Strike,Dip):
     	#	)
 
 
-    fig = plotly.tools.make_subplots(
+    fig = plotly.subplots.make_subplots(
 		rows=3, 
 		cols=2, 
                 horizontal_spacing = 0.1,
@@ -889,12 +890,12 @@ def update_text(EQLAT,EQLON,EQDEPTH,EVENTLAT,EVENTLON,Width,Length,Strike,Dip):
     distances = EQDistances(points,EQDEPTH,Strike,Dip,Length,Width,0,0)
 
     return (
-            'Repi: {:.3f} km\n'.format(float(distances[0]))+
-           ' Rhyp: {:.3f} km\n'.format(float(distances[1]))+
-           ' Rjb: {:.3f} km\n'.format(float(distances[2]))+
-           ' Rrup: {:.3f} km\n'.format(float(distances[3]))+
-	   ' Rell: {:.3f} km\n'.format(float(distances[4]))+
-           ' Rz: {:.3f} km'.format(float(distances[5]))
+            'Repi: {:.3f} km\n'.format(float(distances[0].item()))+
+           ' Rhyp: {:.3f} km\n'.format(float(distances[1].item()))+
+           ' Rjb: {:.3f} km\n'.format(float(distances[2].item()))+
+           ' Rrup: {:.3f} km\n'.format(float(distances[3].item()))+
+	   ' Rell: {:.3f} km\n'.format(float(distances[4].item()))+
+           ' Rz: {:.3f} km'.format(float(distances[5].item()))
            )
 
 

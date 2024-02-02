@@ -3,7 +3,7 @@ blinker==1.7.0
 certifi==2023.11.17
 charset-normalizer==3.3.2
 click==8.1.7
-dash==2.14.1
+dash==2.15.0
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
